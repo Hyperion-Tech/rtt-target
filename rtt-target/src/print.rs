@@ -72,7 +72,7 @@ pub fn set_print_channel(channel: UpChannel) {
     unsafe {
         set_print_channel_cs(
             channel,
-            &((|arg, f| arch::interrupt::free(|_| f(arg))) as CriticalSectionFunc),
+            &((|arg, f| arch::interrupt::free(|| f(arg))) as CriticalSectionFunc),
         );
     }
 }
