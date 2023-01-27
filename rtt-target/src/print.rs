@@ -82,7 +82,7 @@ pub fn set_print_channel(channel: UpChannel) {
 pub mod print_impl {
     use super::*;
 
-    fn with_writer<F: Fn(TerminalWriter) -> ()>(number: u8, f: F) {
+    fn with_writer<F: Fn(TerminalWriter)>(number: u8, f: F) {
         let cs = CRITICAL_SECTION.load(Ordering::SeqCst);
 
         if !cs.is_null() {
@@ -91,7 +91,7 @@ pub mod print_impl {
             let args = (number, f);
 
             unsafe {
-                (&*cs)(&args as *const _ as *mut (), |args_ptr| {
+                (*cs)(&args as *const _ as *mut (), |args_ptr| {
                     let args = &*(args_ptr as *const (u8, F));
                     let term = &mut *PRINT_TERMINAL.as_mut_ptr();
 
